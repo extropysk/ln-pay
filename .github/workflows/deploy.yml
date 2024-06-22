@@ -1,25 +1,51 @@
-name: Deploy to GitHub Pages
+name: Deploy static content to Pages
 
 on:
+  # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
-  pull_request:
-    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets the GITHUB_TOKEN permissions to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
-    concurrency: ci-${{ github.ref }}
+  # Single deploy job since we're just deploying
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v3
         with:
-          node-version: "16"
-          registry-url: "https://registry.npmjs.org"
-      - run: yarn --frozen-lockfile
-      - run: yarn build
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4.2.5
+          node-version: 18
+          cache: "npm"
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Build
+        run: yarn build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
         with:
-          branch: gh-pages
-          folder: dist
+          # Upload dist repository
+          path: "./dist"
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
