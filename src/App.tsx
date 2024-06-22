@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useLn } from "@/hooks/ln";
 import { getProperty } from "@/utils/ui";
 import { QRCodeSVG } from "qrcode.react";
@@ -27,36 +28,40 @@ function App() {
 
   return (
     <div className="flex justify-center p-4">
-      <Card>
+      <Card className="max-w-sm">
         <CardHeader>
-          <CardTitle>LN PAY</CardTitle>
-          <CardDescription>powered by Extropy</CardDescription>
+          <CardDescription>Leave a tip for</CardDescription>
+          <CardTitle>{ADDRESS}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-4">
           {!invoice ? (
-            <p>loading...</p>
+            <Skeleton className="h-[256px] w-[256px]" />
           ) : (
-            <>
-              <a
-                href={`lightning:${invoice.paymentRequest}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <QRCodeSVG
-                  value={`lightning:${invoice.paymentRequest}`}
-                  size={256}
-                  bgColor={getProperty("--background") || "#000000"}
-                  fgColor={getProperty("--foreground") || "#ffffff"}
-                  level={"M"}
-                />
-              </a>
-              <Button className="w-full" onClick={sendPayment}>
-                ⚡️ Click to pay
-              </Button>
-            </>
+            <a
+              href={`lightning:${invoice.paymentRequest}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <QRCodeSVG
+                value={`lightning:${invoice.paymentRequest}`}
+                size={256}
+                bgColor={getProperty("--background") || "#000000"}
+                fgColor={getProperty("--foreground") || "#ffffff"}
+                level={"M"}
+              />
+            </a>
           )}
+          <Button
+            className="w-full uppercase"
+            onClick={sendPayment}
+            disabled={!invoice}
+          >
+            ⚡️ send
+          </Button>
         </CardContent>
-        <CardFooter>Scan or click to pay using your LN wallet</CardFooter>
+        <CardFooter>
+          Scan or click to pay using your bitcoin lightning wallet
+        </CardFooter>
       </Card>
     </div>
   );
