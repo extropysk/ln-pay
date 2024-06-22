@@ -22,7 +22,7 @@ function App() {
     address: ADDRESS,
     currency: CURRENCY,
     amount: Number(params.get("amount") ?? "1"),
-    comment: params.get("comment"),
+    comment: params.get("comment") ?? "",
   });
 
   return (

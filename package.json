@@ -29,6 +29,7 @@
     "@typescript-eslint/eslint-plugin": "^5.59.0",
     "@typescript-eslint/parser": "^5.59.0",
     "@vitejs/plugin-react-swc": "^3.0.0",
+    "@webbtc/webln-types": "^3.0.0",
     "autoprefixer": "^10.4.14",
     "eslint": "^8.38.0",
     "postcss": "^8.4.24",
